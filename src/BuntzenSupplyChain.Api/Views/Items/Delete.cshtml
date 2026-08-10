@@ -1,0 +1,23 @@
+@model SupplyItem
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Delete Item Confirmation";
+}
+
+<div class="card-table-wrapper" style="max-width:600px; margin:0 auto; border-color:#fecaca;">
+    <h2 style="color:var(--danger-red); margin-bottom:1rem;">Confirm Item Deletion</h2>
+    
+    <p style="color:var(--text-muted); margin-bottom:1rem;">Are you sure you want to delete this medical supply item from the database?</p>
+
+    <div style="line-height:2; background-color:#f8fafc; padding:1rem; border-radius:6px; border:1px solid var(--border-light);">
+        <p><strong>Item Number:</strong> <code style="color:var(--primary-blue);">@Model.ItemNumber</code></p>
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Category:</strong> @Model.Category</p>
+    </div>
+
+    <form asp-action="Delete" method="post" style="margin-top:1.5rem; display:flex; gap:1rem;">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn-action" style="background-color:var(--danger-red);">Confirm Delete</button>
+        <a asp-action="Index" class="btn-outline">Cancel</a>
+    </form>
+</div>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BuntzenSupplyChain.Api/BuntzenSupplyChain.Api.csproj" />
+    <Project Path="src/BuntzenSupplyChain.Application/BuntzenSupplyChain.Application.csproj" />
+    <Project Path="src/BuntzenSupplyChain.Domain/BuntzenSupplyChain.Domain.csproj" />
+    <Project Path="src/BuntzenSupplyChain.Infrastructure/BuntzenSupplyChain.Infrastructure.csproj" />
+  </Folder>
+</Solution>

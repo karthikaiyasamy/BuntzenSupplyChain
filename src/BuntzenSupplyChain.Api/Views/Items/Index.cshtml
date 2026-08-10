@@ -1,0 +1,45 @@
+@model List<SupplyItem>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Supply Items";
+}
+
+<div class="table-title-row" style="margin-bottom:1.5rem;">
+    <div>
+        <h2 style="font-size:1.4rem;">Supply Chain Medical Items</h2>
+        <p style="font-size:0.85rem; color:var(--text-muted);">Standard C# ASP.NET Core MVC Create, Read, Update, and Delete operations</p>
+    </div>
+    <a asp-action="Create" class="btn-action" style="background-color:var(--success-green);">+ Add New Item</a>
+</div>
+
+<div class="card-table-wrapper">
+    <table class="clean-table">
+        <thead>
+            <tr>
+                <th>Item Number</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Unit Price</th>
+                <th>Reorder Point</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><code style="color:var(--primary-blue);">@item.ItemNumber</code></td>
+                    <td><strong>@item.Name</strong></td>
+                    <td><span class="status-badge info">@item.Category</span></td>
+                    <td>$@item.UnitPrice.ToString("F2")</td>
+                    <td>@item.DefaultReorderPoint @item.UnitOfMeasure</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" style="color:var(--primary-blue); font-weight:600;">Details</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id" style="color:var(--warning-amber); font-weight:600;">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id" style="color:var(--danger-red); font-weight:600;">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,69 @@
+@model List<BuntzenSupplyChain.Application.Interfaces.SqlTuningScenarioResult>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "T-SQL Performance Laboratory";
+}
+
+<div style="margin-bottom:2rem;">
+    <h1 style="font-size:1.6rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.5rem;">T-SQL Performance and Execution Plan Tuning Laboratory</h1>
+    <p style="color:var(--text-muted);">Benchmarking environment for comparing unoptimized queries against index seek refactored queries in C# and SQL Server.</p>
+</div>
+
+@foreach (var scenario in Model)
+{
+    <div class="card-table-wrapper">
+        <div class="table-title-row">
+            <div>
+                <span class="status-badge info" style="margin-bottom:0.4rem;">@scenario.Category</span>
+                <h2 style="font-size:1.2rem;">@scenario.ScenarioName</h2>
+            </div>
+            <div>
+                <span class="status-badge optimal" style="font-size:0.95rem; padding:0.4rem 0.8rem;">
+                    @scenario.SpeedupFactor x Faster
+                </span>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.25rem;">
+            <!-- Unoptimized -->
+            <div style="background-color:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:1.2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <strong style="color:var(--danger-red);">Unoptimized Query (Table Scan)</strong>
+                    <span class="status-badge alert">@scenario.UnoptimizedTimeMs.ToString("F2") ms</span>
+                </div>
+                <div class="code-box" style="background-color:#0f172a; color:#f87171;">
+                    <pre>@scenario.UnoptimizedQuery</pre>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+                    Rows Scanned: @scenario.UnoptimizedRowsScanned.ToString("N0") | Execution Plan: @scenario.UnoptimizedExecutionPlanSummary
+                </div>
+            </div>
+
+            <!-- Optimized -->
+            <div style="background-color:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; padding:1.2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <strong style="color:var(--success-green);">Refactored T-SQL (Index Seek)</strong>
+                    <span class="status-badge optimal">@scenario.OptimizedTimeMs.ToString("F2") ms</span>
+                </div>
+                <div class="code-box" style="background-color:#0f172a; color:#34d399;">
+                    <pre>@scenario.OptimizedQuery</pre>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+                    Rows Scanned: @scenario.OptimizedRowsScanned.ToString("N0") | Execution Plan: @scenario.OptimizedExecutionPlanSummary
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(scenario.IndexRecommendation))
+        {
+            <div style="background-color:#f0f9ff; border:1px solid #bae6fd; border-radius:6px; padding:0.85rem; margin-bottom:0.75rem;">
+                <strong style="color:var(--primary-blue); font-size:0.85rem;">SQL Server Index Recommendation:</strong>
+                <div class="code-box" style="margin-top:0.3rem;"><pre>@scenario.IndexRecommendation</pre></div>
+            </div>
+        }
+
+        <div style="background-color:#f8fafc; border:1px solid var(--border-light); border-radius:6px; padding:0.75rem 1rem; font-size:0.88rem; color:var(--text-dark);">
+            <strong>Technical Key Takeaway:</strong> @scenario.KeyTakeaway
+        </div>
+    </div>
+}

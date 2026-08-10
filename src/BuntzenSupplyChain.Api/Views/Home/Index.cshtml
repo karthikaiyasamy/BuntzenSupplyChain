@@ -1,0 +1,102 @@
+@model List<SiteInventory>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Inventory Dashboard";
+}
+
+<div class="card-grid">
+    <div class="card-box">
+        <div class="card-title">Tracked Medical SKUs</div>
+        <div class="card-metric">@ViewBag.TotalItems</div>
+        <div class="card-desc">Personal protective equipment, surgical, pharma, and diagnostic supplies</div>
+    </div>
+    
+    <div class="card-box">
+        <div class="card-title">PAR Deficit Alerts</div>
+        <div class="card-metric" style="color:var(--danger-red);">@ViewBag.DeficitCount</div>
+        <div class="card-desc">Units requiring stock replenishment</div>
+    </div>
+
+    <div class="card-box">
+        <div class="card-title">Active Requisitions</div>
+        <div class="card-metric" style="color:var(--warning-amber);">@ViewBag.TotalRequisitions</div>
+        <div class="card-desc">Processing via central distribution hub</div>
+    </div>
+
+    <div class="card-box">
+        <div class="card-title">Health Authority Sites</div>
+        <div class="card-metric" style="color:var(--success-green);">4</div>
+        <div class="card-desc">Children's Hospital, Women's Hospital, General Hospital, Memorial Hospital</div>
+    </div>
+</div>
+
+<div class="card-table-wrapper">
+    <div class="table-title-row">
+        <h2>Hospital Wards Stock and PAR Level Monitor</h2>
+        <div style="display:flex; gap:0.5rem;">
+            <button onclick="filterDeficits(false)" class="btn-outline">All Stock</button>
+            <button onclick="filterDeficits(true)" class="btn-action" style="background-color:var(--danger-red);">PAR Deficits Only</button>
+        </div>
+    </div>
+
+    <table class="clean-table" id="stockTable">
+        <thead>
+            <tr>
+                <th>Health Site</th>
+                <th>Item Number</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>On Hand</th>
+                <th>Allocated</th>
+                <th>PAR Level</th>
+                <th>Reorder Threshold</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="@(item.IsParDeficit ? "row-deficit" : "")">
+                    <td>
+                        <strong>@item.Site.SiteCode</strong>
+                        <div style="font-size:0.78rem; color:var(--text-muted);">@item.Site.Name</div>
+                    </td>
+                    <td><code style="color:var(--primary-blue);">@item.Item.ItemNumber</code></td>
+                    <td>@item.Item.Name</td>
+                    <td><span class="status-badge info">@item.Item.Category</span></td>
+                    <td><strong>@item.QuantityOnHand</strong> @item.Item.UnitOfMeasure</td>
+                    <td>@item.QuantityAllocated</td>
+                    <td>@item.ParLevel</td>
+                    <td>@item.ReorderThreshold</td>
+                    <td>
+                        @if (item.IsParDeficit)
+                        {
+                            <span class="status-badge alert">Reorder Needed</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge optimal">Optimal</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function filterDeficits(onlyDeficits) {
+        const rows = document.querySelectorAll('#stockTable tbody tr');
+        rows.forEach(row => {
+            if (onlyDeficits) {
+                if (row.classList.contains('row-deficit')) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            } else {
+                row.style.display = '';
+            }
+        });
+    }
+</script>

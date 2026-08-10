@@ -1,0 +1,74 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Azure DevOps and SDLC Governance";
+}
+
+<div style="margin-bottom:2rem;">
+    <h1 style="font-size:1.6rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.5rem;">Azure DevOps and SDLC Governance</h1>
+    <p style="color:var(--text-muted);">Pipeline automation, server environment configurations, and technical SDLC standards.</p>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+    <!-- Azure DevOps Pipeline -->
+    <div class="card-table-wrapper">
+        <div class="table-title-row">
+            <h2>Azure Pipelines YAML (CI/CD)</h2>
+            <span class="status-badge optimal">azure-pipelines.yml</span>
+        </div>
+        <div class="code-box" style="height:350px;">
+            <pre>trigger:
+  branches:
+    include:
+      - main
+      - release/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  solution: 'BuntzenSupplyChain.sln'
+
+steps:
+- task: UseDotNet@3
+  displayName: 'Install .NET 10 SDK'
+  inputs:
+    version: '10.x'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore NuGet Packages'
+  inputs:
+    command: 'restore'
+    projects: '$(solution)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Solution'
+  inputs:
+    command: 'build'
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run Unit Tests'
+  inputs:
+    command: 'test'
+    projects: '**/*Tests/*.csproj'</pre>
+        </div>
+    </div>
+
+    <!-- Infrastructure & Environment -->
+    <div class="card-table-wrapper">
+        <div class="table-title-row">
+            <h2>Farm Server and Operations</h2>
+            <span class="status-badge info">Supply Chain Servers</span>
+        </div>
+        
+        <ul style="list-style:none; line-height:2; font-size:0.9rem; color:var(--text-dark);">
+            <li><strong>Web Server Farm:</strong> Kestrel reverse-proxy with load balancing</li>
+            <li><strong>Database Management:</strong> SQL Server AlwaysOn Availability Groups</li>
+            <li><strong>ESB Integration:</strong> Automated XML and XSLT transformation workers</li>
+            <li><strong>Security and OS Updates:</strong> OS patch cycles managed during low-impact windows</li>
+            <li><strong>Documentation:</strong> System architecture specs, data flow diagrams, and UAT sign-off documentation</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+@model SupplyItem
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Item Details";
+}
+
+<div class="card-table-wrapper" style="max-width:600px; margin:0 auto;">
+    <h2 style="color:var(--primary-navy); margin-bottom:1rem;">Item Details: @Model.ItemNumber</h2>
+    
+    <div style="line-height:2; font-size:0.92rem;">
+        <p><strong>SKU:</strong> <code style="color:var(--primary-blue);">@Model.ItemNumber</code></p>
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Description:</strong> @(string.IsNullOrEmpty(Model.Description) ? "N/A" : Model.Description)</p>
+        <p><strong>Category:</strong> <span class="status-badge info">@Model.Category</span></p>
+        <p><strong>Unit Price:</strong> $@Model.UnitPrice.ToString("F2")</p>
+        <p><strong>Reorder Threshold:</strong> @Model.DefaultReorderPoint @Model.UnitOfMeasure</p>
+        <p><strong>Vendor:</strong> @Model.PreferredVendorName (SKU: @Model.VendorSku)</p>
+    </div>
+
+    <div style="margin-top:2rem; display:flex; gap:1rem;">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-action" style="background-color:var(--warning-amber);">Edit Item</a>
+        <a asp-action="Index" class="btn-outline">Back to List</a>
+    </div>
+</div>

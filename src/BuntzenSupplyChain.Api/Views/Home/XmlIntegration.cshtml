@@ -1,0 +1,94 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "XML and XSLT Integration Workbench";
+}
+
+<div style="margin-bottom:2rem;">
+    <h1 style="font-size:1.6rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.5rem;">XML and XSLT Integration Workbench</h1>
+    <p style="color:var(--text-muted);">Enterprise integration simulator. Test vendor XML payloads (EDI 850 PO / EDI 856 ASN), execute C# XSLT transformations, and inspect canonical JSON outputs.</p>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+    <!-- XML Input -->
+    <div class="card-table-wrapper">
+        <div class="table-title-row">
+            <h2>Vendor XML Payload Input</h2>
+            <select id="docTypeSelect" onchange="loadSamplePayload()" class="form-control" style="width:auto;">
+                <option value="EDI_850_PurchaseOrder">EDI 850 Purchase Order</option>
+                <option value="EDI_856_AdvanceShipNotice">EDI 856 Advance Ship Notice</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Select XSLT Compiled Template:</label>
+            <select id="templateSelect" class="form-control">
+                @foreach (var tmpl in (List<string>)ViewBag.Templates)
+                {
+                    <option value="@tmpl">@tmpl</option>
+                }
+            </select>
+        </div>
+
+        <textarea id="xmlInput" class="code-box" style="width:100%; height:300px; resize:vertical; font-family:monospace;">@ViewBag.SampleXml850</textarea>
+
+        <button onclick="runTransformation()" class="btn-action" style="width:100%; justify-content:center; margin-top:1rem; padding:0.75rem;">
+            Run C# XSLT Transform
+        </button>
+    </div>
+
+    <!-- Output JSON & Telemetry -->
+    <div class="card-table-wrapper">
+        <div class="table-title-row">
+            <h2>Canonical JSON Response</h2>
+            <span id="timingBadge" class="status-badge optimal" style="display:none;">0 ms</span>
+        </div>
+
+        <textarea id="jsonOutput" readonly class="code-box" style="width:100%; height:390px; resize:vertical; color:#34d399; font-family:monospace;" placeholder="Click 'Run C# XSLT Transform' to execute ASP.NET Web API transformation..."></textarea>
+    </div>
+</div>
+
+<script>
+    const sample850 = `@Html.Raw(ViewBag.SampleXml850)`;
+    const sample856 = `@Html.Raw(ViewBag.SampleXml856)`;
+
+    function loadSamplePayload() {
+        const type = document.getElementById('docTypeSelect').value;
+        if (type === 'EDI_850_PurchaseOrder') {
+            document.getElementById('xmlInput').value = sample850;
+            document.getElementById('templateSelect').value = 'EDI_850_VendorToCanonical';
+        } else {
+            document.getElementById('xmlInput').value = sample856;
+            document.getElementById('templateSelect').value = 'EDI_856_ASNToCanonical';
+        }
+    }
+
+    async function runTransformation() {
+        const rawXml = document.getElementById('xmlInput').value;
+        const templateName = document.getElementById('templateSelect').value;
+        const docType = document.getElementById('docTypeSelect').value === 'EDI_850_PurchaseOrder' ? 0 : 1;
+
+        const payload = {
+            rawXml: rawXml,
+            xsltTemplateName: templateName,
+            documentType: docType,
+            vendorName: "Medtronic Surgical BC"
+        };
+
+        try {
+            const response = await fetch('/api/ediintegration/transform', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            document.getElementById('jsonOutput').value = JSON.stringify(result, null, 2);
+
+            const badge = document.getElementById('timingBadge');
+            badge.style.display = 'inline-block';
+            badge.innerText = `Duration: ${result.processingTimeMs.toFixed(2)} ms | Status: ${result.status}`;
+        } catch (err) {
+            document.getElementById('jsonOutput').value = "Error executing transform: " + err;
+        }
+    }
+</script>

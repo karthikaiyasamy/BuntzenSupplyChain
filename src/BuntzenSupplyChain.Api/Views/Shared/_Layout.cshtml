@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Buntzen Supply Chain Platform</title>
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --primary-navy: #1e3a8a;
+            --primary-blue: #0284c7;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --border-light: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --sun-color: #d97706;
+            --success-green: #059669;
+            --warning-amber: #d97706;
+            --danger-red: #dc2626;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            font-family: var(--font-family);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Top Synthetic Data Banner */
+        .disclaimer-banner {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 0.4rem 1rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        /* Main Header Navigation */
+        .header-nav {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.85rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Sun Icon Graphic */
+        .sun-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+            position: relative;
+        }
+
+        .sun-icon::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.9;
+        }
+
+        .brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-navy);
+            background-color: #f1f5f9;
+            text-decoration: none;
+        }
+
+        .btn-action {
+            background-color: var(--primary-navy);
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-action:hover {
+            background-color: #1e40af;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-navy);
+            border: 1px solid var(--border-light);
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: var(--border-hover);
+            text-decoration: none;
+        }
+
+        /* Container */
+        .main-container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Grid & Cards (Health Gateway Style) */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-box {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-metric {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            line-height: 1;
+        }
+
+        .card-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Data Tables */
+        .card-table-wrapper {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+        }
+
+        .table-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .table-title-row h2 {
+            font-size: 1.15rem;
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        .clean-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        .clean-table th {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .clean-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-dark);
+        }
+
+        .clean-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.alert {
+            background-color: #fef2f2;
+            color: var(--danger-red);
+            border: 1px solid #fecaca;
+        }
+
+        .status-badge.optimal {
+            background-color: #ecfdf5;
+            color: var(--success-green);
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-badge.info {
+            background-color: #f0f9ff;
+            color: var(--primary-blue);
+            border: 1px solid #bae6fd;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        /* Code Blocks */
+        code, pre {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        .code-box {
+            background-color: #0f172a;
+            color: #38bdf8;
+            border-radius: 6px;
+            padding: 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-surface);
+            border-top: 1px solid var(--border-light);
+            padding: 1.5rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Synthetic Data Disclaimer Banner -->
+    <div class="disclaimer-banner">
+        Notice: Synthetic data environment for practicing C# and .NET web technologies.
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="header-nav">
+        <div class="brand">
+            <div class="sun-icon"></div>
+            <div class="brand-text">
+                <h1>Buntzen</h1>
+                <span>Supply Chain Platform</span>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a asp-controller="Items" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Items" ? "active" : "")">
+                    Supply Items (CRUD)
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                    Inventory Dashboard
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="PerformanceLab" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "PerformanceLab" ? "active" : "")">
+                    T-SQL Performance Lab
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="XmlIntegration" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "XmlIntegration" ? "active" : "")">
+                    XML and XSLT Integration
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="AzureDevOps" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "AzureDevOps" ? "active" : "")">
+                    DevOps and SDLC
+                </a>
+            </li>
+            <li>
+                <a href="/swagger" target="_blank" class="btn-action">
+                    Web API Swagger
+                </a>
+            </li>
+        </ul>
+    </header>
+
+    <div class="main-container">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <p>Buntzen Supply Chain Platform | C# .NET 10, ASP.NET Core MVC, ASP.NET Web API, and T-SQL Architecture</p>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
